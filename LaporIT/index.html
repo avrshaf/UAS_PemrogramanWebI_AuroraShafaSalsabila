@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaporIT: Feedback & Pengaduan Kampus</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white fixed-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold custom-title fs-4 m-0 d-flex align-items-center" href="#" onclick="location.reload()">
+                LaporIT
+                <svg class="icon-phone ms-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#13273F" style="width: 22px; height: 22px;">
+                    <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
+                </svg>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav gap-2">
+                    <li class="nav-item ms-lg-3">
+                        <a class="nav-link fw-bold text-red" href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-container">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-8">
+                <div class="card minimal-card p-5">
+
+                    <div class="progress minimal-progress mb-5" style="display: none;">
+                        <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+
+                    <form id="surveiForm">
+                        <div class="form-step active" id="welcomeStep">
+                            <h2 class="mb-3 text-navy fw-bold large-title d-flex justify-content-center align-items-center">
+                                LaporIT
+                                <svg class="icon-phone-large ms-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#13273F" style="width: 36px; height: 36px;">
+                                    <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
+                                </svg>
+                            </h2>
+
+                            <p class="text-center text-muted mb-5 text-welcome px-lg-4 mt-2">
+                                Selamat datang di layanan pengaduan LaporIT. Sampaikan kritik, saran, aspirasi, atau apresiasi anda demi kenyamanan dan perkembangan Program Studi Teknologi Informasi Fakultas Teknik Universitas Lambung Mangkurat. Identitas kamu bisa dirahasiakan (Anonim).
+                            </p>
+                            
+                            <div class="d-grid col-10 mx-auto mt-2">
+                                <button type="button" class="btn btn-red w-100 py-3 fw-bold btn-start-app" id="btnStart">Buat Laporan</button>
+                            </div>
+                        </div>
+
+                        <div class="form-step" id="step1">
+                            <h4 class="text-navy fw-bold mb-4">Identitas Pengadu</h4>
+                            <hr class="mb-4">
+                            <div class="mb-4">
+                                <label for="nama" class="form-label text-navy fw-bold">Nama Lengkap <span class="text-muted fw-normal">(Opsional / Kosongkan jika anonim)</span></label>
+                                <input type="text" class="form-control minimal-input" id="nama" placeholder="Anonim">
+                            </div>
+                            <div class="mb-4">
+                                <label for="prodi" class="form-label text-navy fw-bold">Program Studi</label>
+                                <input type="text" class="form-control minimal-input" id="prodi" value="Teknologi Informasi" required readonly>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-slate btn-back-welcome px-5 py-2 fw-bold">Kembali</button>
+                                <button type="button" class="btn btn-red btn-next px-5 py-2 fw-bold">Selanjutnya</button>
+                            </div>
+                        </div>
+
+                        <div class="form-step" id="step2">
+                            <h4 class="text-navy fw-bold mb-4">Kategori & Jenis Laporan</h4>
+                            <hr class="mb-4">
+                            
+                            <div class="mb-4">
+                                <label for="kategori" class="form-label text-navy fw-bold">Tujuan Pengaduan / Feedback:</label>
+                                <select class="form-select minimal-input" id="kategori" required>
+                                    <option value="" selected disabled>-- Pilih Tujuan --</option>
+                                    <option value="Dosen TI">Dosen TI</option>
+                                    <option value="Fasilitas & Layanan Kampus">Fasilitas & Layanan Kampus</option>
+                                    <option value="Himpunan Mahasiswa Teknologi Informasi">Himpunan Mahasiswa Teknologi Informasi</option>
+                                    <option value="Asisten Praktikum">Asisten Praktikum</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-5 mt-4">
+                                <label class="form-label d-block text-navy fw-bold mb-3">Jenis Laporan:</label>
+                                <div class="form-check form-check-inline me-4">
+                                    <input class="form-check-input minimal-radio" type="radio" name="jenisLaporan" id="jenis1" value="Pengaduan / Kritik">
+                                    <label class="form-check-label text-navy" for="jenis1">Pengaduan / Kritik</label>
+                                </div>
+                                <div class="form-check form-check-inline me-4">
+                                    <input class="form-check-input minimal-radio" type="radio" name="jenisLaporan" id="jenis2" value="Saran / Aspirasi">
+                                    <label class="form-check-label text-navy" for="jenis2">Saran / Aspirasi</label>
+                                </div>
+                                <div class="form-check form-check-inline me-4">
+                                    <input class="form-check-input minimal-radio" type="radio" name="jenisLaporan" id="jenis3" value="Apresiasi">
+                                    <label class="form-check-label text-navy" for="jenis3">Apresiasi</label>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-slate btn-prev px-5 py-2 fw-bold">Kembali</button>
+                                <button type="button" class="btn btn-red btn-next px-5 py-2 fw-bold">Selanjutnya</button>
+                            </div>
+                        </div>
+
+                        <div class="form-step" id="step3">
+                            <h4 class="text-navy fw-bold mb-4">Isi Laporan & Feedback</h4>
+                            <hr class="mb-4">
+                            <div class="mb-5">
+                                <label for="isiFeedback" class="form-label text-navy fw-bold">Tuliskan detail feedback atau pengaduan kamu:</label>
+                                <textarea class="form-control minimal-input" id="isiFeedback" rows="7" placeholder="feedback atau pengaduan..." required></textarea>
+                            </div>
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-slate btn-prev px-5 py-2 fw-bold">Kembali</button>
+                                <button type="submit" class="btn btn-red px-5 py-2 fw-bold">Kirim Laporan</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div id="result" style="display: none;" class="text-center mt-3 p-2">
+                        <h2 class="text-red mb-4 fw-bold large-title">Laporan Terkirim!</h2>
+                        <p class="text-muted mb-5 text-welcome">Terima kasih atas laporan yang anda berikan demi kemajuan lingkungan kampus.</p>
+                        
+                        <div class="card bg-clean border minimal-summary p-4 text-start">
+                            <h6 class="fw-bold text-red mb-3">Detail Pengaduan</h6>
+                            <hr class="mb-3">
+                            <p class="mb-2 text-navy"><strong>Pengirim:</strong> <span id="resNama"></span></p>
+                            <p class="mb-2 text-navy"><strong>Program Studi:</strong> <span id="resProdi"></span></p>
+                            <p class="mb-2 text-navy"><strong>Tujuan:</strong> <span id="resKategori"></span></p>
+                            <p class="mb-2 text-navy"><strong>Jenis Laporan:</strong> <span id="resJenis"></span></p>
+                            <p class="mb-0 text-navy"><strong>Isi Feedback:</strong> <br><span id="resIsi" class="fst-italic text-muted"></span></p>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-red mt-5 px-5 py-3 fw-bold btn-start-app" onclick="location.reload()">Buat Pengaduan Baru</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content minimal-card p-3">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center pt-3 pb-4">
+                    <h4 class="fw-bold text-navy mb-1">Aurora Shafa Salsabila</h4>
+                    <p class="text-muted mb-4 small">2510817220010 | Teknologi Informasi</p>
+                    <p class="text-muted mb-0" style="line-height: 1.7; text-align: justify;">
+                        Halo! Web <strong>LaporIT</strong> ini dibangun sebagai project UAS Pemrograman Web I. Idenya berangkat dari keresahan melihat sistem pengaduan dan aspirasi di prodi Teknologi Informasi yang selama ini masih mengandalkan Google Form biasa dan kurang terpusat. Jadi, saya mencoba mengembangkan sistem pelaporan berbasis website yang lebih interaktif dan terstruktur. Semoga platform sederhana ini bisa jadi wadah yang aman dan bermanfaat untuk meningkatkan kualitas fasilitas maupun layanan di kampus kita!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

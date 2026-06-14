@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin: LaporIT</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Tambahan style khusus halaman admin agar tabel serasi */
+        .table-responsive {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+        }
+        .thead-navy {
+            background-color: #13273F !important;
+            color: #ffffff !important;
+        }
+        .thead-navy th {
+            color: #ffffff !important;
+            padding: 15px;
+        }
+        td {
+            padding: 15px !important;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white fixed-top shadow-sm py-3">
+        <div class="container">
+            <span class="navbar-brand fw-bold custom-title fs-4 m-0 d-flex align-items-center">
+                LaporIT
+                <svg class="icon-phone mx-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#13273F" style="width: 22px; height: 22px;">
+                    <path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/>
+                </svg>
+                Admin
+            </span>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 130px; margin-bottom: 50px;">
+        <div class="row">
+            <div class="col-12">
+                
+                <div class="table-responsive">
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <h3 class="fw-bold text-navy m-0">Daftar Pengaduan Masuk</h3>
+                        <button id="clearStorage" class="btn btn-red px-4 py-2 fw-bold">Hapus Semua Data</button>
+                    </div>
+
+                    <table class="table table-hover mb-0">
+                        <thead class="thead-navy">
+                            <tr>
+                                <th scope="col" style="border-top-left-radius: 8px;">No</th>
+                                <th scope="col">Waktu</th>
+                                <th scope="col">Nama Pengirim</th>
+                                <th scope="col">Program Studi</th>
+                                <th scope="col">Tujuan</th>
+                                <th scope="col">Jenis</th>
+                                <th scope="col" style="border-top-right-radius: 8px; width: 35%;">Isi Laporan / Feedback</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelAduanBody">
+                            </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Membaca array dari Local Storage
+            const listAduan = JSON.parse(localStorage.getItem('dataLaporIT_All')) || [];
+            const tbody = $('#tabelAduanBody');
+
+            if (listAduan.length === 0) {
+                tbody.append(`<tr><td colspan="7" class="text-center text-muted fst-italic py-4">Belum ada data pengaduan yang masuk.</td></tr>`);
+            } else {
+                // Loop data array untuk dimasukkan ke baris tabel
+                $.each(listAduan, function(index, item) {
+                    let rowHtml = `
+                        <tr>
+                            <td><strong>${index + 1}</strong></td>
+                            <td class="small text-muted">${item.waktu || '-'}</td>
+                            <td><span class="badge ${item.nama === 'Anonim' ? 'bg-secondary' : 'bg-primary'} p-2">${item.nama}</span></td>
+                            <td>${item.prodi}</td>
+                            <td><span class="text-navy fw-bold">${item.kategori}</span></td>
+                            <td>${item.jenis}</td>
+                            <td class="fst-italic text-secondary">${item.isi}</td>
+                        </tr>
+                    `;
+                    tbody.append(rowHtml);
+                });
+            }
+
+            // Fungsi tombol hapus semua logs
+            $('#clearStorage').click(function() {
+                if (confirm('Apakah Anda yakin ingin menghapus semua daftar pengaduan di Local Storage?')) {
+                    localStorage.removeItem('dataLaporIT_All');
+                    location.reload();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
