@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiPharm - Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <a href="index.html" style="text-decoration: none;">
+                <img src="logo_utama.png" alt="DigiPharm Logo" style="height: 45px; width: auto; display: block;">
+            </a>
+        </div>
+        <nav class="nav-links">
+            <a href="catalog.html">Medications</a>
+            <a href="facilities.html">Nearest Health Facility</a>
+            <a href="tracking.html">Orders</a>
+            <a href="about.html">About</a>
+        </nav>
+        <a href="cart.html" class="cart-icon">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span id="cart-badge" class="badge">0</span>
+        </a>
+    </header>
+
+    <div class="container" style="max-width: 600px; margin: 40px auto; text-align: center;">
+        <div class="checkout-box" style="padding: 40px;">
+            <h2 style="font-size: 2rem; margin-bottom: 10px;">Payment via QRIS</h2>
+            <p style="margin-bottom: 30px;">Scan the QR code below using your mobile banking or e-wallet app.</p>
+            
+            <div style="background: white; display: inline-block; padding: 15px; border-radius: 10px; margin-bottom: 30px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS Code" style="width: 250px; height: 250px;">
+            </div>
+
+            <h3 style="font-size: 1.5rem; margin-bottom: 25px;">Total: <span id="payment-amount">IDR 0</span></h3>
+
+            <button class="btn-primary full-width" style="font-size: 1.2rem; padding: 15px;" onclick="confirmPayment()">
+                <i class="fa-solid fa-check-double"></i> I Have Paid
+            </button>
+            
+            <div style="margin-top: 20px;">
+                <a href="checkout.html" style="color: var(--text-dark); text-decoration: none; font-weight: 600;"><i class="fa-solid fa-arrow-left"></i> Cancel Payment</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let activeOrder = JSON.parse(localStorage.getItem('digipharm_active_order'));
+        if (activeOrder) {
+            document.getElementById('payment-amount').innerText = 'IDR ' + activeOrder.total.toLocaleString('id-ID');
+        } else {
+            window.location.href = "cart.html";
+        }
+
+        function confirmPayment() {
+            let orderHistory = JSON.parse(localStorage.getItem('digipharm_all_orders')) || [];
+            
+            if (activeOrder) {
+                orderHistory.unshift(activeOrder);
+                localStorage.setItem('digipharm_all_orders', JSON.stringify(orderHistory));
+            }
+
+            localStorage.removeItem('digipharm_active_order');
+            localStorage.removeItem('digipharm_cart');
+            
+            alert("Payment Successful! Your order is being processed.");
+            window.location.href = "tracking.html";
+        }
+    </script>
+</body>
+</html>

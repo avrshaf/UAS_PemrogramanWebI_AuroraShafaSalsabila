@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiPharm - Medication Catalog</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root { --primary-blue: #a4bdf6; }
+        * { font-family: 'Poppins', sans-serif; }
+        body { background-color: #f8f9fa; padding-bottom: 50px; }
+        
+        .bg-custom-blue { background-color: var(--primary-blue); }
+        .text-custom-blue { color: var(--primary-blue); }
+        
+        .med-card { transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+        .med-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+        .search-box { border: none; padding: 15px 25px; border-radius: 30px; outline: none; width: 100%; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white sticky-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><img src="logo_utama.png" alt="DigiPharm Logo" height="35"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav gap-4">
+                    <li class="nav-item"><a class="nav-link fw-bold text-custom-blue" href="catalog.html">Medications</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="facilities.html">Nearest Health Facility</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="tracking.html">Orders</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="about.html">About</a></li>
+                </ul>
+            </div>
+            <a href="cart.html" class="text-dark fs-4 position-relative text-decoration-none ms-auto ms-lg-0 mt-3 mt-lg-0">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="nav-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; display: none;">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="bg-custom-blue py-5 mb-5">
+        <div class="container d-flex flex-column flex-lg-row align-items-center justify-content-between gap-4">
+            <div class="text-center text-lg-start">
+                <h1 class="fw-bolder display-5 mb-2">Medication Catalog</h1>
+                <p class="fw-semibold mb-0">Browse our complete selection of quality medications</p>
+            </div>
+            <div class="position-relative" style="width: 100%; max-width: 400px;">
+                <i class="fa-solid fa-magnifying-glass position-absolute top-50 start-0 translate-middle-y ms-4 text-muted"></i>
+                <input type="text" id="searchInput" class="search-box ps-5 shadow-sm" placeholder="Search medications..." onkeyup="searchMeds()">
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row g-4" id="catalog-grid">
+            </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const MASTER_IMAGE = "https://www.icapsulepack.com/wp-content/uploads/2023/04/Drug-and-Medicine-2.jpg";
+        
+        function getMasterMeds() {
+            let stored = localStorage.getItem('digipharm_master_meds');
+            return stored ? JSON.parse(stored) : []; 
+        }
+
+        function renderCatalog(filterText = "") {
+            const grid = document.getElementById('catalog-grid');
+            let medicines = getMasterMeds();
+            let stockData = JSON.parse(localStorage.getItem('digipharm_stock')) || {};
+            
+            const filtered = medicines.filter(m => m.name.toLowerCase().includes(filterText.toLowerCase()));
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = "<div class='col-12 text-center mt-5'><h3 class='text-muted'>No medications found. Open Admin Panel to add medications.</h3></div>";
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => {
+                let isAvailable = stockData[item.id] !== undefined ? stockData[item.id] : true;
+                let badgeHtml = !isAvailable ? `<span class="position-absolute top-0 end-0 m-3 badge bg-danger fs-6 shadow-sm z-3">Sold Out</span>` : '';
+                let imageStyle = !isAvailable ? "filter: grayscale(100%); opacity: 0.6;" : "";
+                let btnHtml = isAvailable 
+                    ? `<button class="btn btn-dark w-100 fw-bold rounded-3 py-2" onclick="addToCart(event, '${item.id}')">Add to Cart</button>`
+                    : `<button class="btn btn-secondary w-100 fw-bold rounded-3 py-2" disabled>Out of Stock</button>`;
+
+                return `
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 position-relative med-card bg-white" onclick="${isAvailable ? `goToDetail('${item.id}')` : ''}">
+                        ${badgeHtml}
+                        <img src="${MASTER_IMAGE}" class="card-img-top p-3 rounded-5" alt="${item.name}" style="${imageStyle} object-fit: cover; height: 200px;">
+                        <div class="card-body d-flex flex-column px-4 pb-4">
+                            <h5 class="fw-bolder mb-1 text-capitalize">${item.name}</h5>
+                            <p class="text-custom-blue fw-bolder fs-5 mb-4">IDR ${item.price}</p>
+                            <div class="mt-auto">
+                                ${btnHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function searchMeds() {
+            const text = document.getElementById('searchInput').value;
+            renderCatalog(text);
+        }
+
+        function addToCart(event, id) {
+            event.stopPropagation(); 
+            let cart = JSON.parse(localStorage.getItem('digipharm_cart')) || [];
+            let existing = cart.find(item => item.id.toLowerCase() === id.toLowerCase());
+            
+            if(existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ id: id, qty: 1 });
+            }
+            
+            localStorage.setItem('digipharm_cart', JSON.stringify(cart));
+            updateBadge();
+            alert('Item added to cart!');
+        }
+
+        function goToDetail(id) {
+            window.location.href = 'detail.html?item=' + id;
+        }
+
+        function updateBadge() {
+            const cartData = localStorage.getItem('digipharm_cart');
+            let cart = [];
+            try { cart = JSON.parse(cartData) || []; } catch (e) { cart = []; }
+            let total = cart.reduce((sum, item) => sum + (parseInt(item.qty) || 0), 0);
+            const badge = document.getElementById('nav-badge');
+            if (badge) {
+                badge.innerText = total;
+                badge.style.setProperty('display', total > 0 ? 'block' : 'none', 'important');
+            }
+        }
+
+        window.onload = () => {
+            renderCatalog();
+            updateBadge();
+        };
+
+        window.addEventListener('storage', () => {
+            renderCatalog(document.getElementById('searchInput').value);
+            updateBadge();
+        });
+    </script>
+</body>
+</html>

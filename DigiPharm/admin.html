@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiPharm - Admin Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root { --primary-blue: #a4bdf6; }
+        * { font-family: 'Poppins', sans-serif; }
+        body { background-color: #f4f7f6; padding-bottom: 50px; }
+        .bg-custom-blue { background-color: var(--primary-blue); }
+        .table-primary th { background-color: var(--primary-blue); border-bottom: none; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-black text-white py-4 mb-5 shadow-sm">
+        <div class="container text-center text-md-start">
+            <h1 class="fw-bolder mb-0 fs-2">DigiPharm Admin Panel</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="mb-5 pb-3 border-bottom">
+            <h3 class="fw-bolder mb-4"><i class="fa-solid fa-list-check me-2"></i> Incoming Orders Management</h3>
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 bg-white">
+                        <thead class="table-primary">
+                            <tr>
+                                <th class="py-3 px-4">Order ID</th>
+                                <th class="py-3 px-4">Date / Time</th>
+                                <th class="py-3 px-4">Customer Info</th>
+                                <th class="py-3 px-4">Items</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bolder mb-0"><i class="fa-solid fa-boxes-stacked me-2"></i> Inventory Management</h3>
+                <button class="btn btn-dark fw-bold rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addMedModal">
+                    <i class="fa-solid fa-plus me-2"></i>Add New Medicine
+                </button>
+            </div>
+            
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 bg-white">
+                        <thead class="table-primary">
+                            <tr>
+                                <th class="py-3 px-4">Medicine Name</th>
+                                <th class="py-3 px-4">Price (IDR)</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addMedModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0 mt-3 px-4">
+                    <h5 class="fw-bolder fs-4">Add New Medicine</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 py-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Medicine Name</label>
+                        <input type="text" id="newMedName" class="form-control py-2 fw-semibold" placeholder="e.g. Betadine">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Price (IDR)</label>
+                        <input type="text" id="newMedPrice" class="form-control py-2 fw-semibold" placeholder="e.g. 15.000">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Dosage / Takaran (Opsional)</label>
+                        <input type="text" id="newMedDose" class="form-control py-2 fw-semibold" placeholder="e.g. 500mg / Oleskan secukupnya">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Usage Instructions (Opsional)</label>
+                        <textarea id="newMedInstruction" class="form-control py-2 fw-semibold" rows="2" placeholder="e.g. Oleskan tipis pada bagian luka luar. Jangan ditelan."></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small">Important Warnings (Opsional)</label>
+                        <textarea id="newMedWarning" class="form-control py-2 fw-semibold" rows="2" placeholder="e.g. Hanya untuk obat luar. Hindari kontak dengan mata."></textarea>
+                    </div>
+                    <button class="btn btn-primary w-100 fw-bold py-3 rounded-3" onclick="addNewMed()">Save Medicine</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function getMasterMeds() {
+            let defaultMeds = [
+                { id: 'paracetamol', name: 'Paracetamol', price: '10.000' },
+                { id: 'ibuprofen', name: 'Ibuprofen', price: '15.000' },
+                { id: 'mefenamic', name: 'Mefenamic Acid', price: '12.000' },
+                { id: 'cetirizine', name: 'Cetirizine', price: '20.000' },
+                { id: 'guaifenesin', name: 'Guaifenesin', price: '8.000' },
+                { id: 'dextro', name: 'Dextromethorphan', price: '10.000' },
+                { id: 'amoxicillin', name: 'Amoxicillin', price: '25.000' },
+                { id: 'vitaminc', name: 'Vitamin C', price: '30.000' },
+                { id: 'loratadine', name: 'Loratadine', price: '18.000' },
+                { id: 'omeprazole', name: 'Omeprazole', price: '22.000' },
+                { id: 'promag', name: 'Promag', price: '8.000' },
+                { id: 'panadolextra', name: 'Panadol Extra', price: '12.000' }
+            ];
+            let stored = localStorage.getItem('digipharm_master_meds');
+            if(!stored) {
+                localStorage.setItem('digipharm_master_meds', JSON.stringify(defaultMeds));
+                return defaultMeds;
+            }
+            return JSON.parse(stored);
+        }
+
+        function renderAdmin() {
+            let history = JSON.parse(localStorage.getItem('digipharm_history')) || [];
+            const orderBody = document.getElementById('order-list');
+            
+            if(history.length === 0) {
+                orderBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted fw-bold">No incoming orders.</td></tr>`;
+            } else {
+                let historyWithIndex = history.map((order, originalIdx) => {
+                    return { ...order, originalIdx: originalIdx };
+                });
+                
+                let reversedHistory = historyWithIndex.reverse();
+
+                orderBody.innerHTML = reversedHistory.map((order) => {
+                    let itemsHtml = order.items.map(i => `${i.qty}x ${i.id}`).join('<br>');
+                    let status = order.status || 'Packing';
+                    let badgeColor = status === 'Packing' ? 'bg-warning text-dark' : (status === 'Medicine Dispatched' ? 'bg-primary' : 'bg-success');
+                    
+                    let cName = order.customerName || 'Guest';
+                    let cPhone = order.customerPhone || '-';
+                    let cAddress = order.deliveryMethod === 'Home Delivery' ? (order.address || '-') : 'Pickup at Pharmacy';
+                    
+                    let customerInfoHtml = `
+                        <span class="d-block fw-bold text-dark">${cName}</span>
+                        <span class="d-block small text-muted"><i class="fa-solid fa-phone me-1"></i>${cPhone}</span>
+                        <span class="d-block small text-muted mt-1" style="max-width: 180px; line-height: 1.3;">
+                            <i class="fa-solid ${order.deliveryMethod === 'Home Delivery' ? 'fa-map-location-dot text-danger' : 'fa-shop text-primary'} me-1"></i>${cAddress}
+                        </span>
+                    `;
+
+                    return `
+                    <tr>
+                        <td class="py-3 px-4 fw-bold">${order.id}</td>
+                        <td class="py-3 px-4 text-muted small">${order.date}</td>
+                        <td class="py-3 px-4">${customerInfoHtml}</td>
+                        <td class="py-3 px-4 text-capitalize small fw-semibold">${itemsHtml}</td>
+                        <td class="py-3 px-4"><span class="badge ${badgeColor}">${status}</span></td>
+                        <td class="py-3 px-4 text-center">
+                            <button class="btn btn-sm btn-dark fw-bold" onclick="updateStatus(${order.originalIdx})">Update</button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
+
+            let masterMeds = getMasterMeds();
+            let stockData = JSON.parse(localStorage.getItem('digipharm_stock')) || {};
+            
+            document.getElementById('inventory-list').innerHTML = masterMeds.map(item => {
+                let isAvailable = stockData[item.id] !== undefined ? stockData[item.id] : true;
+                let statusBadge = isAvailable ? `<span class="badge bg-success">In Stock</span>` : `<span class="badge bg-danger">Sold Out</span>`;
+                let stockBtn = isAvailable
+                    ? `<button class="btn btn-sm btn-outline-danger fw-bold ms-1" onclick="toggleStock('${item.id}', false)"><i class="fa-solid fa-xmark"></i> Empty</button>`
+                    : `<button class="btn btn-sm btn-success fw-bold ms-1" onclick="toggleStock('${item.id}', true)"><i class="fa-solid fa-check"></i> Restock</button>`;
+
+                return `
+                <tr>
+                    <td class="py-3 px-4 fw-bold text-capitalize">${item.name}</td>
+                    <td class="py-3 px-4 fw-semibold text-primary">${item.price}</td>
+                    <td class="py-3 px-4">${statusBadge}</td>
+                    <td class="py-3 px-4 text-end">
+                        <button class="btn btn-sm btn-warning fw-bold text-dark" onclick="editPrice('${item.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
+                        ${stockBtn}
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateStatus(actualIdx) {
+            let history = JSON.parse(localStorage.getItem('digipharm_history')) || [];
+            if (!history[actualIdx]) return;
+            let currentStatus = history[actualIdx].status || 'Packing';
+            
+            if(currentStatus === 'Packing') {
+                history[actualIdx].status = 'Medicine Dispatched';
+            } else if(currentStatus === 'Medicine Dispatched') {
+                history[actualIdx].status = 'Ready for Collection';
+            } else {
+                alert('Order has already been fully processed!');
+                return;
+            }
+            
+            localStorage.setItem('digipharm_history', JSON.stringify(history));
+            renderAdmin();
+        }
+
+        function toggleStock(id, isAvailable) {
+            let stockData = JSON.parse(localStorage.getItem('digipharm_stock')) || {};
+            stockData[id] = isAvailable;
+            localStorage.setItem('digipharm_stock', JSON.stringify(stockData));
+            renderAdmin();
+        }
+
+        function editPrice(id) {
+            let masterMeds = getMasterMeds();
+            let medIndex = masterMeds.findIndex(m => m.id === id);
+            if(medIndex === -1) return;
+            
+            let newPrice = prompt(`Enter new price for ${masterMeds[medIndex].name} (e.g., 25.000):`, masterMeds[medIndex].price);
+            if(newPrice && newPrice.trim() !== '') {
+                masterMeds[medIndex].price = newPrice.trim();
+                localStorage.setItem('digipharm_master_meds', JSON.stringify(masterMeds));
+                renderAdmin();
+            }
+        }
+
+        function addNewMed() {
+            let name = document.getElementById('newMedName').value.trim();
+            let price = document.getElementById('newMedPrice').value.trim();
+            let dose = document.getElementById('newMedDose').value.trim();
+            let instruction = document.getElementById('newMedInstruction').value.trim();
+            let warning = document.getElementById('newMedWarning').value.trim();
+            
+            if(!name || !price) { alert("Please fill both Name and Price!"); return; }
+
+            let masterMeds = getMasterMeds();
+            let newId = name.toLowerCase().replace(/[^a-z0-9]/g, ''); 
+            
+            masterMeds.push({ 
+                id: newId, 
+                name: name, 
+                price: price,
+                dose: dose,
+                instruction: instruction,
+                warning: warning
+            });
+            
+            localStorage.setItem('digipharm_master_meds', JSON.stringify(masterMeds));
+            
+            let stockData = JSON.parse(localStorage.getItem('digipharm_stock')) || {};
+            stockData[newId] = true;
+            localStorage.setItem('digipharm_stock', JSON.stringify(stockData));
+
+            bootstrap.Modal.getInstance(document.getElementById('addMedModal')).hide();
+            
+            document.getElementById('newMedName').value = '';
+            document.getElementById('newMedPrice').value = '';
+            document.getElementById('newMedDose').value = '';
+            document.getElementById('newMedInstruction').value = '';
+            document.getElementById('newMedWarning').value = '';
+            renderAdmin();
+        }
+
+        window.onload = renderAdmin;
+        window.addEventListener('storage', renderAdmin);
+    </script>
+</body>
+</html>

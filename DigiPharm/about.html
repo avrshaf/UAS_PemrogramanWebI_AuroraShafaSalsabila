@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiPharm - About Us</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root { --primary-blue: #a4bdf6; }
+        * { font-family: 'Poppins', sans-serif; }
+        body { background-color: #f8f9fa; padding-bottom: 50px; }
+
+        .bg-custom-blue { background-color: var(--primary-blue); }
+        .text-custom-blue { color: var(--primary-blue); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white sticky-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><img src="logo_utama.png" alt="DigiPharm Logo" height="35"></a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav gap-4">
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="catalog.html">Medications</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="facilities.html">Nearest Health Facility</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="tracking.html">Orders</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-custom-blue" href="about.html">About</a></li>
+                </ul>
+            </div>
+            
+            <a href="cart.html" class="text-dark fs-4 position-relative text-decoration-none ms-auto ms-lg-0 mt-3 mt-lg-0">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="nav-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; display: none;">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container py-5 mt-4" style="max-width: 900px;">
+        <div class="bg-white p-4 p-md-5 rounded-5 shadow-sm border" style="border-color: #eee !important;">
+            
+            <div class="d-flex align-items-center justify-content-center gap-3 mb-5 flex-wrap">
+                <h1 class="fw-bolder mb-0 text-dark">What is</h1>
+                <img src="logo_utama.png" alt="DigiPharm Logo" style="height: 50px; width: auto;">
+                <h1 class="display-5 fw-bolder mb-0">?</h1>
+            </div>
+
+            <p class="fs-5 text-muted mb-4 lh-lg" style="text-align: justify;">
+                <strong>DigiPharm</strong> is a digital healthcare platform designed to provide transparent, safe, and efficient access to medications for modern society. We serve as a practical solution for those with limited mobility, particularly students and individuals living far from home in boarding houses (anak kos) who often face the challenge of being alone when their physical condition weakens and they are unable to go out for medical assistance.
+            </p>
+
+            <p class="fs-5 text-muted mb-5 lh-lg" style="text-align: justify;">
+                By integrating an informative medicine catalog, direct delivery services to the user's doorstep, and a comprehensive directory of nearby health facilities such as hospitals and medical clinics, DigiPharm is committed to removing the barriers of distance and time in emergency situations. Our focus is to ensure that every user, especially those away from their families, receives trusted medical support and compassionate service through inclusive and user-friendly web technology.
+            </p>
+
+            <div class="border-top pt-5 mt-5 text-center">
+                <h3 class="fw-bolder mb-4">Contact us</h3>
+                <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3 gap-lg-4 text-muted">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-envelope fs-5 me-2 text-custom-blue"></i>
+                        <span class="fw-bold text-dark text-nowrap" style="font-size: 0.95rem;">healthywithdigipharm@gmail.com</span>
+                    </div>
+                    <div class="d-none d-lg-block">|</div>
+                    <div class="d-flex align-items-center">
+                        <i class="fa-brands fa-whatsapp fs-5 me-2 text-success"></i>
+                        <span class="fw-bold text-dark text-nowrap" style="font-size: 0.95rem;">+628125672899</span>
+                    </div>
+                    <div class="d-none d-lg-block">|</div>
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-location-dot fs-5 me-2 text-danger"></i>
+                        <span class="fw-bold text-dark text-nowrap" style="font-size: 0.9rem;">Jl. Kayutangi II, Banjarmasin</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function updateBadge() {
+            const cartData = localStorage.getItem('digipharm_cart');
+            let cart = [];
+            try { cart = JSON.parse(cartData) || []; } catch (e) { cart = []; }
+            let total = cart.reduce((sum, item) => sum + (parseInt(item.qty) || 0), 0);
+            
+            const badge = document.getElementById('nav-badge');
+            if (badge) {
+                badge.innerText = total;
+                badge.style.setProperty('display', total > 0 ? 'block' : 'none', 'important');
+            }
+        }
+
+        window.onload = updateBadge;
+        window.addEventListener('storage', updateBadge);
+    </script>
+</body>
+</html>

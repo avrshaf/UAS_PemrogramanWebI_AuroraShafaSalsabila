@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiPharm - Facilities</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root { --primary-blue: #a4bdf6; }
+        * { font-family: 'Poppins', sans-serif; }
+        body { background-color: #f8f9fa; padding-bottom: 50px; }
+
+        .bg-custom-blue { background-color: var(--primary-blue); }
+        .text-custom-blue { color: var(--primary-blue); }
+        
+        .fac-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .fac-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white sticky-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><img src="logo_utama.png" alt="DigiPharm Logo" height="35"></a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav gap-4">
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="catalog.html">Medications</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-custom-blue" href="facilities.html">Nearest Health Facility</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="tracking.html">Orders</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="about.html">About</a></li>
+                </ul>
+            </div>
+            
+            <a href="cart.html" class="text-dark fs-4 position-relative text-decoration-none ms-auto ms-lg-0 mt-3 mt-lg-0">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="nav-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; display: none;">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="bg-custom-blue py-5">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bolder mb-0 display-5">Find Locations</h1>
+            </div>
+            <p class="fw-semibold mb-0 mt-2 mt-md-0 text-md-end" style="max-width: 400px;">
+                Find nearby pharmacies, hospitals, and healthcare providers
+            </p>
+        </div>
+    </div>
+
+    <div class="container pt-5 pb-3">
+        <h3 class="fw-bolder mb-4"><i class="fa-solid fa-filter me-2 text-custom-blue"></i> Filter by Type</h3>
+        <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-dark text-white fw-bold rounded-pill px-4 f-btn" onclick="filterLocations('all', this)">All locations</button>
+            <button class="btn btn-outline-dark fw-bold rounded-pill px-4 f-btn" onclick="filterLocations('hospital', this)">Hospitals</button>
+            <button class="btn btn-outline-dark fw-bold rounded-pill px-4 f-btn" onclick="filterLocations('pharmacy', this)">Pharmacies</button>
+            <button class="btn btn-outline-dark fw-bold rounded-pill px-4 f-btn" onclick="filterLocations('doctor', this)">Doctors</button>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        <div class="row g-4" id="facilitiesGrid">
+            </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const locations = [
+            { type: 'hospital', name: 'RSUD Ulin Banjarmasin', addr: 'Jl. Ahmad Yani No.Km 2.5, Sungai Baru, Banjarmasin', phone: '(0511) 3252180', time: '24 Hours' },
+            { type: 'hospital', name: 'Ciputra Mitra Hospital', addr: 'Citra Land Complex, Jl. Ahmad Yani KM. 7.8, Banjarmasin', phone: '(0511) 6743999', time: '24 Hours' },
+            { type: 'hospital', name: 'RSUD dr. H. Moch. Ansari Saleh', addr: 'Jl. Brigjend H. Hasan Basri No.1, Alalak Utara', phone: '(0511) 3300741', time: '24 Hours' },
+            { type: 'hospital', name: 'RS Bhayangkara Banjarmasin', addr: 'Jl. Ahmad Yani Km 3.5 No. 68, Kebun Bunga', phone: '(0511) 3256671', time: '24 Hours' },
+            
+            { type: 'pharmacy', name: 'Ali Pharmacy', addr: 'Jl. Kolonel Sugiono No.26, Pekapuran Laut, Banjarmasin', phone: '(0511) 3254378', time: 'Mon - Sat' },
+            { type: 'pharmacy', name: 'Kimia Farma Pharmacy 120', addr: 'Jl. A. Yani No.Km 3.5, Kebun Bunga, Banjarmasin', phone: '(0511) 3252516', time: '24 Hours' },
+            { type: 'pharmacy', name: 'Murah Sehat Pharmacy', addr: 'Jl. Mayjen Sutoyo S No.3, Tlk. Dalam', phone: '(0511) 4412493', time: 'Daily' },
+            { type: 'pharmacy', name: 'Apotek K-24 Kayutangi', addr: 'Jl. Brigjen H. Hasan Basri, Pangeran', phone: '(0511) 3305333', time: '24 Hours' },
+            
+            { type: 'doctor', name: 'Klinik dr. H. Suriadi Ngallo', addr: 'Jl. Bumi Mas Raya, Pemurus Baru, Banjarmasin', phone: '(0511) 3268444', time: '16:00 - 21:00' },
+            { type: 'doctor', name: 'Praktek Dokter Umum dr. Siti', addr: 'Jl. Sultan Adam No.12, Banjarmasin Utara', phone: '(0812) 5566 7788', time: '08:00 - 12:00' },
+            { type: 'doctor', name: 'Klinik Spesialis Kayutangi', addr: 'Jl. Brigjen H. Hasan Basri, Banjarmasin', phone: '(0511) 3301234', time: '09:00 - 20:00' },
+            { type: 'doctor', name: 'Praktek Mandiri dr. Ahmad', addr: 'Jl. Dahlia No.45, Banjarmasin Tengah', phone: '(0813) 4433 2211', time: '17:00 - 21:00' }
+        ];
+
+        function renderLocations(data) {
+            const grid = document.getElementById('facilitiesGrid');
+            grid.innerHTML = data.map(loc => `
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm fac-card p-4 rounded-4" style="background-color: var(--primary-blue);">
+                        <h5 class="fw-bolder mb-3" style="min-height: 48px;">${loc.name}</h5>
+                        <div class="d-flex align-items-start mb-2 small fw-semibold text-dark">
+                            <i class="fa-solid fa-location-dot mt-1 me-2 text-danger" style="width: 15px;"></i>
+                            <span>${loc.addr}</span>
+                        </div>
+                        <div class="d-flex align-items-start mb-2 small fw-semibold text-dark">
+                            <i class="fa-solid fa-phone mt-1 me-2 text-success" style="width: 15px;"></i>
+                            <span>${loc.phone}</span>
+                        </div>
+                        <div class="d-flex align-items-start small fw-semibold text-dark">
+                            <i class="fa-solid fa-clock mt-1 me-2 text-primary" style="width: 15px;"></i>
+                            <span>${loc.time}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterLocations(type, btn) {
+            document.querySelectorAll('.f-btn').forEach(b => {
+                b.classList.remove('btn-dark', 'text-white');
+                b.classList.add('btn-outline-dark');
+            });
+            btn.classList.remove('btn-outline-dark');
+            btn.classList.add('btn-dark', 'text-white');
+            
+            if(type === 'all') {
+                renderLocations(locations);
+            } else {
+                renderLocations(locations.filter(l => l.type === type));
+            }
+        }
+
+        function updateBadge() {
+            const cartData = localStorage.getItem('digipharm_cart');
+            let cart = [];
+            try { cart = JSON.parse(cartData) || []; } catch (e) { cart = []; }
+            let total = cart.reduce((sum, item) => sum + (parseInt(item.qty) || 0), 0);
+            
+            const badge = document.getElementById('nav-badge');
+            if (badge) {
+                badge.innerText = total;
+                badge.style.setProperty('display', total > 0 ? 'block' : 'none', 'important');
+            }
+        }
+
+        window.onload = () => {
+            renderLocations(locations);
+            updateBadge();
+        };
+        window.addEventListener('storage', updateBadge);
+    </script>
+</body>
+</html>

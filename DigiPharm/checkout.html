@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiPharm - Checkout</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root { --primary-blue: #a4bdf6; }
+        * { font-family: 'Poppins', sans-serif; }
+        body { background-color: #f8f9fa; padding-bottom: 50px; }
+        .bg-custom-blue { background-color: var(--primary-blue); }
+        .text-custom-blue { color: var(--primary-blue); }
+        .section-card { background-color: var(--primary-blue); border-radius: 20px; border: none; }
+        .method-card { background: white; border-radius: 15px; padding: 20px; cursor: pointer; border: 4px solid transparent; transition: 0.2s; height: 100%; }
+        .method-card.active { border-color: #000; }
+        .method-card i { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .summary-line { border-top: 2px dashed rgba(0,0,0,0.2); margin: 15px 0; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white sticky-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><img src="logo_utama.png" alt="Logo" height="35"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav gap-4">
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="catalog.html">Medications</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="facilities.html">Nearest Health Facility</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="tracking.html">Orders</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-dark" href="about.html">About</a></li>
+                </ul>
+            </div>
+            <a href="cart.html" class="text-dark fs-4 position-relative text-decoration-none ms-auto ms-lg-0">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="nav-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; display: none;">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="bg-custom-blue py-5">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <h1 class="fw-bolder display-4 mb-2 mb-md-0">Check Out</h1>
+            <p class="fw-semibold mb-0 text-md-end" style="max-width: 300px;">Complete your information details to finalize order</p>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card section-card p-4 shadow-sm h-100">
+                    <h4 class="fw-bolder mb-4"><i class="fa-solid fa-box me-2"></i>Order Summary</h4>
+                    <div id="summary-items" class="mb-4"></div>
+                    <div class="summary-line"></div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bolder fs-5">Total Cost</span>
+                        <span class="fw-bolder fs-3" id="final-price">IDR 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card section-card p-4 shadow-sm">
+                    <h4 class="fw-bolder mb-4"><i class="fa-solid fa-truck me-2"></i>Delivery Details</h4>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div id="btn-pickup" class="method-card active text-center" onclick="setMethod('Pickup')">
+                                <i class="fa-solid fa-shop"></i>
+                                <h6 class="fw-bold mb-1">Store Pickup</h6>
+                                <p class="small text-muted mb-0">Collect directly at pharmacy</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="btn-delivery" class="method-card text-center" onclick="setMethod('Home Delivery')">
+                                <i class="fa-solid fa-truck-fast"></i>
+                                <h6 class="fw-bold mb-1">Home Delivery</h6>
+                                <p class="small text-muted mb-0">Dispatched to your doorstep</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">FULL NAME</label>
+                        <input type="text" id="user-name" class="form-control py-3 rounded-3 border-0 fw-semibold" placeholder="Enter your full name">
+                        <div class="text-danger small fw-bold mt-1" id="name-error" style="display:none;">Full name is required!</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">PHONE NUMBER</label>
+                        <input type="number" id="user-phone" class="form-control py-3 rounded-3 border-0 fw-semibold" placeholder="e.g. 0812345678">
+                        <div class="text-danger small fw-bold mt-1" id="phone-error" style="display:none;">Valid phone number is required!</div>
+                    </div>
+
+                    <div class="mb-4" id="address-field" style="display: none;">
+                        <label class="form-label fw-bold small">DELIVERY ADDRESS</label>
+                        <textarea id="user-address" class="form-control py-3 rounded-3 border-0 fw-semibold" rows="3" placeholder="Enter complete address..."></textarea>
+                        <div class="text-danger small fw-bold mt-1" id="address-error" style="display:none;">Address is required for delivery!</div>
+                    </div>
+
+                    <button class="btn btn-dark w-100 py-3 fw-bold fs-5 rounded-4 shadow" onclick="openQRIS()">
+                        <i class="fa-regular fa-circle-check me-2"></i>Place Order
+                    </button>
+                    
+                    <a href="cart.html" class="btn btn-link text-dark w-100 mt-3 fw-bold text-decoration-none">
+                        <i class="fa-solid fa-arrow-left me-2"></i>Back to Cart
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="qrisModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-5 border-0 shadow-lg">
+                <div class="modal-body text-center p-5">
+                    <h3 class="fw-bolder mb-1">Scan Payment</h3>
+                    <p class="text-muted small mb-4">Scan code via e-wallet or mobile banking</p>
+                    <div class="bg-light p-4 rounded-4 mb-4">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PAY-DIGIPHARM" class="img-fluid rounded-3" alt="QRIS">
+                    </div>
+                    <h5 class="fw-bold mb-4" id="modal-price">IDR 0</h5>
+                    <button class="btn btn-success w-100 py-3 fw-bold rounded-4 mb-3" onclick="finishOrder()">I Have Paid</button>
+                    <button class="btn btn-link text-muted fw-semibold text-decoration-none" data-bs-dismiss="modal">Cancel Payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function getMasterMeds() {
+            let stored = localStorage.getItem('digipharm_master_meds');
+            return stored ? JSON.parse(stored) : []; 
+        }
+
+        let selectedMethod = 'Pickup'; 
+        let cachedTotalCost = 0;
+
+        function setMethod(m) {
+            selectedMethod = m;
+            document.getElementById('btn-pickup').classList.toggle('active', m === 'Pickup');
+            document.getElementById('btn-delivery').classList.toggle('active', m === 'Home Delivery');
+            document.getElementById('address-field').style.display = (m === 'Home Delivery') ? 'block' : 'none';
+        }
+
+        function renderCheckout() {
+            const cart = JSON.parse(localStorage.getItem('digipharm_cart')) || [];
+            if(cart.length === 0) { window.location.href = 'cart.html'; return; }
+
+            let medicines = getMasterMeds();
+            let calculatedTotal = 0;
+            let totalQty = 0;
+
+            document.getElementById('summary-items').innerHTML = cart.map(item => {
+                let info = medicines.find(m => m.id.toLowerCase() === item.id.toLowerCase());
+                let priceString = info ? info.price.toString().replace(/\./g, '') : "10000";
+                let price = parseInt(priceString) || 0;
+                let displayName = info ? info.name : item.id;
+                let sub = price * item.qty;
+                
+                calculatedTotal += sub;
+                totalQty += item.qty;
+
+                return `
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-semibold">${item.qty}x <span class="text-capitalize">${displayName}</span></span>
+                    <span class="fw-bold text-dark">IDR ${sub.toLocaleString('id-ID')}</span>
+                </div>`;
+            }).join('');
+
+            cachedTotalCost = calculatedTotal;
+            const priceString = "IDR " + calculatedTotal.toLocaleString('id-ID');
+            document.getElementById('final-price').innerText = priceString;
+            document.getElementById('modal-price').innerText = priceString;
+            
+            const badge = document.getElementById('nav-badge');
+            if (badge) {
+                badge.innerText = totalQty;
+                badge.style.display = totalQty > 0 ? 'block' : 'none';
+            }
+        }
+
+        function openQRIS() {
+            const tempName = document.getElementById('user-name').value.trim();
+            const tempPhone = document.getElementById('user-phone').value.trim();
+            const tempAddr = document.getElementById('user-address').value.trim();
+            
+            let valid = true;
+            document.getElementById('name-error').style.display = !tempName ? 'block' : 'none';
+            document.getElementById('phone-error').style.display = (!tempPhone || tempPhone.length < 5) ? 'block' : 'none';
+            
+            if (selectedMethod === 'Home Delivery' && !tempAddr) {
+                document.getElementById('address-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('address-error').style.display = 'none';
+            }
+
+            if (!tempName || (!tempPhone || tempPhone.length < 5)) valid = false;
+
+            if (valid) {
+                const myModal = new bootstrap.Modal(document.getElementById('qrisModal'));
+                myModal.show();
+            }
+        }
+
+        function finishOrder() {
+            let cart = JSON.parse(localStorage.getItem('digipharm_cart')) || [];
+            let history = JSON.parse(localStorage.getItem('digipharm_history')) || [];
+            
+            const finalName = document.getElementById('user-name').value.trim();
+            const finalPhone = document.getElementById('user-phone').value.trim();
+            const finalAddr = document.getElementById('user-address').value.trim();
+
+            alert("Data berhasil ditangkap!\nNama: " + finalName + "\nNo HP: " + finalPhone);
+
+            const currentOrder = {
+                id: "ORD-" + Math.floor(Math.random() * 900000 + 100000),
+                date: new Date().toLocaleString('en-GB'),
+                total: cachedTotalCost,
+                items: [...cart],
+                deliveryMethod: selectedMethod,
+                status: "Packing", 
+                customerName: finalName || "Guest",
+                customerPhone: finalPhone || "-",
+                address: finalAddr || "-" 
+            };
+
+            history.push(currentOrder);
+            localStorage.setItem('digipharm_history', JSON.stringify(history));
+            localStorage.removeItem('digipharm_cart'); 
+            
+            window.location.href = 'tracking.html';
+        }
+
+        window.onload = renderCheckout;
+    </script>
+</body>
+</html>

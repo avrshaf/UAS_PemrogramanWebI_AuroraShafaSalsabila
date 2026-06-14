@@ -1,0 +1,140 @@
+:root {
+    --primary-blue: #a4bdf6;
+    --primary-blue-hover: #8ba9eb;
+    --text-dark: #1a1a1a;
+    --bg-light: #f8fafe;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: var(--text-dark);
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.cart-icon {
+    position: relative;
+    font-size: 1.5rem;
+    color: black;
+    text-decoration: none;
+}
+
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+.hero-section { background-color: var(--primary-blue); display: flex; align-items: flex-end; padding: 0 8%; min-height: 520px; overflow: hidden; }
+.header-blue { background-color: var(--primary-blue); padding: 40px 5%; display: flex; justify-content: space-between; align-items: center; }
+
+.detail-container {
+    display: flex;
+    gap: 50px;
+    padding: 60px 5%;
+    align-items: flex-start;
+}
+
+.detail-image {
+    flex: 1;
+    max-width: 500px;
+}
+
+.detail-image img {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.detail-info {
+    flex: 1;
+}
+
+.detail-info h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.detail-price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.detail-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.info-item i {
+    font-size: 1.2rem;
+    margin-top: 4px;
+}
+
+.info-text h4 {
+    font-weight: 800;
+    margin-bottom: 2px;
+}
+
+.btn-add-large {
+    display: block;
+    width: 100%;
+    background-color: var(--primary-blue);
+    color: black;
+    text-align: center;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: 0.3s;
+}
+
+.btn-add-large:hover {
+    background-color: var(--primary-blue-hover);
+}
